@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MessagingModule } from './modules/messaging.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [MessagingModule.register()], // If i remove the .register() part, the module is loaded, but the service of the module is not
 })
 export class AppModule {}
