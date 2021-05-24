@@ -1,20 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import * as https from 'https';
 import HealthcheckInterface from './interfaces/healthcheck.interface';
-import SendMessageDto from '../../dto/send-message.dto';
 import * as admin from 'firebase-admin';
-import { app, AppOptions } from 'firebase-admin/lib/firebase-namespace-api';
+import { app } from 'firebase-admin/lib/firebase-namespace-api';
 import App = app.App;
+import { ConfigService } from '../config/config.service';
+import { messaging } from 'firebase-admin/lib/messaging';
+import MessagingTopicResponse = messaging.MessagingTopicResponse;
+import ConfigInterface from '../config/interfaces/config.interface';
 
 @Injectable()
-export class FirebaseService implements SendMessageDto {
+export class FirebaseService {
   private readonly app: App;
-  constructor() {
-    this.app = admin.initializeApp();
+  constructor(private readonly config: ConfigService) {
+    this.app = admin.initializeApp({
+      credential: admin.credential.cert(
+        (config as ConfigInterface).serviceAccount,
+      ),
+      storageBucket: (config as ConfigInterface).storageBucket
+    });
   }
 
-  public send(message: string, topic: string) {
-    return '';
+  send(message: string, topic: string): Promise<MessagingTopicResponse> {
+    return this.app.messaging().sendToTopic(topic, {
+      data: {
+        message: message,
+      },
+      notification: {
+        body: message,
+      },
+    });
   }
 
   public static async healthcheck(): Promise<boolean> {

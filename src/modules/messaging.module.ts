@@ -7,17 +7,21 @@ import ConfigInterface from './messaging/services/config/interfaces/config.inter
 @Module({
   providers: [
     {
+      provide: ConfigService,
+      useValue: config,
+    } as ValueProvider<ConfigInterface>,
+    {
       provide: FirebaseService,
+      useClass: FirebaseService,
+      /*
       useFactory: async () => {
         if (await FirebaseService.healthcheck()) {
           return FirebaseService;
         }
       },
+       */
     },
-    {
-      provide: ConfigService,
-      useValue: config,
-    } as ValueProvider<ConfigInterface>,
   ],
+  exports: [FirebaseService],
 })
 export class MessagingModule {}
