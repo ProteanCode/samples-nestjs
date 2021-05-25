@@ -10,7 +10,7 @@ import MessagingTopicResponse = messaging.MessagingTopicResponse;
 import ConfigInterface from '../config/interfaces/config.interface';
 import MessagingServiceInterface, {
   MessagingServiceSendResponse,
-} from '../../interfaces/messaging.service.interface';
+} from '../../interfaces/messaging-service.interface';
 import { MessagingService } from '../messaging.service';
 
 @Injectable()

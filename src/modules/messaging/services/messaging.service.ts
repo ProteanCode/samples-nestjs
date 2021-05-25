@@ -1,6 +1,6 @@
 import MessagingServiceInterface, {
   MessagingServiceSendResponse,
-} from '../interfaces/messaging.service.interface';
+} from '../interfaces/messaging-service.interface';
 import UnimplementedMethodException from '../../../exceptions/UnimplementedMethodException';
 
 export abstract class MessagingService implements MessagingServiceInterface {

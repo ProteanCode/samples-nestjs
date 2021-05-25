@@ -4,6 +4,8 @@ import { MessagingModule } from './modules/messaging.module';
 import { MessagingService } from './modules/messaging/services/messaging.service';
 import { ScrappingModule } from './modules/scapping.module';
 import { TwitterService } from './modules/scrapping/services/twitter/twitter.service';
+import { LoggingModule } from './modules/logging.module';
+import { LoggingService } from './modules/logging/services/logging.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -16,6 +18,13 @@ async function bootstrap() {
   console.log(id.data.id);
   const tweets = await twitter.getUserTweetsById(id.data.id);
   console.log(tweets);
+
+  const logger = app
+    .select(LoggingModule)
+    .get(LoggingService, { strict: true });
+
+  logger.info('Hello there');
+
   /*
   const messagingService = app
     .select(MessagingModule)

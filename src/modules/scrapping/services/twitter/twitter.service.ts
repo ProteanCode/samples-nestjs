@@ -11,7 +11,7 @@ import ConfigInterface from './config/interfaces/config.interface';
 export class TwitterService {
   private api: Twitter;
   private access_token: null | string = null;
-  private config: ConfigInterface;
+  private readonly config: ConfigInterface;
 
   constructor(private readonly configService: ConfigService) {
     this.config = configService as ConfigInterface;
