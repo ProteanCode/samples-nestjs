@@ -13,8 +13,9 @@ async function bootstrap() {
     .get(TwitterService, { strict: true });
 
   const id = await twitter.getUserIdByName('elonmusk');
-  console.log(id);
-
+  console.log(id.data.id);
+  const tweets = await twitter.getUserTweetsById(id.data.id);
+  console.log(tweets);
   /*
   const messagingService = app
     .select(MessagingModule)

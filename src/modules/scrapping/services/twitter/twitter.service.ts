@@ -3,9 +3,9 @@ import Twitter from 'twitter-lite';
 import UserInterface from './interfaces/user.interface';
 import ResponseInterface from './interfaces/response.interface';
 import TweetInterface from './interfaces/tweet.interface';
-import GetUserTweetsByIdOptionsInterface from './interfaces/get.user.tweets.by.id.options.interface';
-import { ConfigService } from '../config/config.service';
-import ConfigInterface from '../config/interfaces/config.interface';
+import GetUserTweetsByIdOptionsInterface from './interfaces/get-user-tweets-by-id-options.interface';
+import { ConfigService } from './config/config.service';
+import ConfigInterface from './config/interfaces/config.interface';
 
 @Injectable()
 export class TwitterService {
