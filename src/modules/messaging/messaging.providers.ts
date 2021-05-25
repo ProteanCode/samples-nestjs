@@ -14,6 +14,7 @@ const messagingProviders: Provider[] = [
   {
     provide: MessagingService,
     useFactory: async (config: ConfigService) => {
+      console.log('THE TRUE ONE', await FirebaseService.healthcheck());
       if (await FirebaseService.healthcheck()) {
         return new FirebaseService(config);
       }

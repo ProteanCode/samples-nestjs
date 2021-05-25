@@ -1,24 +1,49 @@
-import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
-import { AppModule } from './../src/app.module';
-import { INestApplication } from '@nestjs/common';
+import messagingProviders from '../src/modules/messaging/messaging.providers';
+import { MessagingService } from '../src/modules/messaging/services/messaging.service';
+import { NoopService } from '../src/modules/messaging/services/noop/noop.service';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication;
+describe('NoopMessagingService', () => {
+  let noopMessagingService: NoopService;
 
-  beforeAll(async () => {
-    const moduleFixture = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+  beforeEach(async () => {
+    const noopModuleRef = await Test.createTestingModule({
+      providers: [...messagingProviders],
+    })
+      .overrideProvider(MessagingService)
+      .useFactory({
+        factory: () => new NoopService(),
+      })
+      .compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
+    noopMessagingService = noopModuleRef.get<MessagingService>(
+      MessagingService,
+    );
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('should return a 0 id in case of noop service', async () => {
+    const response = await noopMessagingService.send('aaa', 'test');
+    expect(response).toHaveProperty('id');
+    expect(response.id).toBe('0');
+  });
+});
+
+describe('WorkingMessagingService', () => {
+  let workingMessagingService: MessagingService;
+
+  beforeEach(async () => {
+    const moduleRef = await Test.createTestingModule({
+      providers: [...messagingProviders],
+    }).compile();
+
+    workingMessagingService = moduleRef.get<MessagingService>(MessagingService);
+  });
+
+  describe('send', () => {
+    it('should return a messaging service send response', async () => {
+      const response = await workingMessagingService.send('aaa', 'test');
+      expect(response).toHaveProperty('id');
+      expect(response.id).not.toBe('0');
+    });
   });
 });
