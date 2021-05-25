@@ -1,17 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MessagingModule } from './modules/messaging.module';
-import { FirebaseService } from './modules/messaging/services/firebase/firebase.service';
+import { MessagingService } from './modules/messaging/services/messaging.service';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
 
-  const firebaseService = app
+  const messagingService = app
     .select(MessagingModule)
-    .get(FirebaseService, { strict: true });
+    .get(MessagingService, { strict: true });
 
-  const x = await firebaseService.send('xxx', 'csdc');
-  console.log(x);
+  const messagingServiceSendResponse = await messagingService.send(
+    'This is a message sent from NestJS',
+    'welcome',
+  );
+  console.log(messagingServiceSendResponse);
 
   await app.close();
 }
