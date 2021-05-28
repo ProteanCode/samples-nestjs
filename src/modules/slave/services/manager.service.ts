@@ -32,12 +32,22 @@ export class ManagerService {
   private async runTwitter() {
     console.log('running twitter');
     const usernames = this.getTwitterUsernames();
+    // TODO it could be a more clean code
     for (const username of usernames) {
-      const response = await this.twitter.getUserIdByName(username);
+      const response = await this.twitter.getUserIdByName(username); // TODO cache that request
       if (response.data) {
-        const tweets = await this.twitter.getUserTweetsById(response.data.id);
-        if (tweets.data) {
-          this.sendTwitterData(tweets.data[0]);
+        const tweets = await this.twitter.getUserTweetsById(response.data.id); // TODO specify tweets after timestamp
+        if (tweets.data && tweets.data.length > 0) {
+          const patterns = this.getTwitterProfilePatterns(username);
+          if (patterns.length > 0) {
+            patterns.forEach((pattern) => {
+              if (
+                tweets.data[0].text.search(new RegExp(pattern, 'ig')) !== -1 // TODO could be mixed into one expression
+              ) {
+                this.sendTwitterData(tweets.data[0]);
+              }
+            });
+          }
         }
       }
     }
@@ -49,5 +59,9 @@ export class ManagerService {
 
   private getTwitterUsernames() {
     return Object.keys(this.scrappingConfig.twitter.profiles);
+  }
+
+  private getTwitterProfilePatterns(username: string): string[] {
+    return this.scrappingConfig.twitter.profiles[username].patterns;
   }
 }
