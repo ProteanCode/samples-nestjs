@@ -1,0 +1,12 @@
+{
+  "twitter": {
+    "profiles": {
+      "elonmusk": {
+        "patterns": [ "coin", "doge", "moon", "hold", "hodl" ]
+      },
+      "mcuban": {
+        "patterns": [ "coin", "doge" ]
+      }
+    }
+  }
+}

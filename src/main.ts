@@ -1,42 +1,51 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { MessagingModule } from './modules/messaging.module';
-import { MessagingService } from './modules/messaging/services/messaging.service';
-import { ScrappingModule } from './modules/scapping.module';
+import { SlaveModule } from './slave.module';
+import { ScrappingModule } from './modules/scrapping.module';
 import { TwitterService } from './modules/scrapping/services/twitter/twitter.service';
 import { LoggingModule } from './modules/logging.module';
 import { LoggingService } from './modules/logging/services/logging.service';
+import { default as AppConfig } from './config/app.json';
+import AppConfigInterface from './interfaces/app-config.interface';
+import { ManagerService } from './modules/slave/services/manager.service';
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(AppModule);
+  const config: AppConfigInterface = AppConfig as AppConfigInterface;
 
-  const twitter = app
-    .select(ScrappingModule)
-    .get(TwitterService, { strict: true });
+  if (config.mode === 'slave') {
+    const app = await NestFactory.createApplicationContext(SlaveModule);
 
-  const id = await twitter.getUserIdByName('elonmusk');
-  console.log(id.data.id);
-  const tweets = await twitter.getUserTweetsById(id.data.id);
-  console.log(tweets);
+    while (true) {
+      const manager = app
+        .select(SlaveModule)
+        .get(ManagerService, { strict: true });
 
-  const logger = app
-    .select(LoggingModule)
-    .get(LoggingService, { strict: true });
+      manager.runAll();
 
-  logger.info('Hello there');
+      /*
+      const twitter = app
+        .select(ScrappingModule)
+        .get(TwitterService, { strict: true });
 
-  /*
-  const messagingService = app
-    .select(MessagingModule)
-    .get(MessagingService, { strict: true });
+      const id = await twitter.getUserIdByName('elonmusk');
+      console.log(id.data.id);
+      const tweets = await twitter.getUserTweetsById(id.data.id);
+      console.log(tweets);
 
-  const messagingServiceSendResponse = await messagingService.send(
-    'This is a message sent from NestJS',
-    'welcome',
-  );
-  console.log(messagingServiceSendResponse);
-  */
+      const logger = app
+        .select(LoggingModule)
+        .get(LoggingService, { strict: true });
 
-  await app.close();
+      logger.info('Hello there');
+
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      //await app.close();
+       */
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    }
+  }
+
+  if (config.mode === 'master') {
+    // TODO implement master server
+  }
 }
 bootstrap();

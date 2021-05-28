@@ -4,8 +4,8 @@ import UserInterface from './interfaces/user.interface';
 import ResponseInterface from './interfaces/response.interface';
 import TweetInterface from './interfaces/tweet.interface';
 import GetUserTweetsByIdOptionsInterface from './interfaces/get-user-tweets-by-id-options.interface';
-import { ConfigService } from './config/config.service';
 import ConfigInterface from './config/interfaces/config.interface';
+import { TwitterConfigService } from './config/config.service';
 
 @Injectable()
 export class TwitterService {
@@ -13,7 +13,7 @@ export class TwitterService {
   private access_token: null | string = null;
   private readonly config: ConfigInterface;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly configService: TwitterConfigService) {
     this.config = configService as ConfigInterface;
     this.api = new Twitter({
       version: '2', // version "1.1" is the default (change for v2)

@@ -1,0 +1,13 @@
+{
+  "mode": "master|slave",
+  "modes": {
+    "master": {
+      "domain": "localhost",
+      "port": 3000
+    },
+    "slave": {
+      "master_domain": "localhost",
+      "master_port": 3000
+    }
+  }
+}
